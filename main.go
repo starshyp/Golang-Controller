@@ -7,45 +7,53 @@ func main() {
 
 //class battery
 type Battery struct {
-	ID									int
-	Status                           string
-	ColumnsList, FloorRequestButtonsList int
+	ID int
+	Status string
+	ColumnsList []Column
+	FloorRequestButtonsList []FloorRequestButton
+	_amountOfColumns int
+	_amountOfFloors int
+	_amountOfBasements int
+	_amountOfElevatorPerColumn int
 }
 
 //battery ctor
-  func(b *Battery) Init(_id, _amountOfColumns, _amountOfFloors, _amountOfBasements int) {
-      b.ID = id
+func(b *Battery) Init(_id, _amountOfColumns, _amountOfFloors, _amountOfBasements, _amountOfElevatorPerColumn int) {
+      b.ID = _id
       b.Status = "online"
       b.ColumnsList = []Column
-      b.FloorRequestButtonsList = []int
-  }
+      b.FloorRequestButtonsList = []FloorRequestButton
 
-  //for Init(i = 0; i <= _amountOfColumns; ID++ int)
-  //{
-  //    Column column = new(Column(ID, 5, 20, false))
-  //    column.ID = ID
-  //    this.ColumnsList.Add(column)
+	  //for i := 0; i < _amountOfColumns; i++ {
+	  //	var column int
+	  //	b.ColumnsList.append(column)
+	  //}
+  }
+  //for Init(i := 0; i <= _amountOfColumns; ID++ int) {
+  //   Column column = new(Column(ID, 5, 20, false))
+  //   column.ID = ID
+  //   this.ColumnsList.Add(column)
   //}
 
 //method to assign elevator
-func AssignElevator( _requestedFloor int, _direction string) int {
-	bestColumn = FindBestColumn(_requestedFloor)
- 	chosenElevator = FindBestElevator(_requestedFloor, _direction)
+func AssignElevator( _requestedFloor int, _direction string) (int, int) {
+	bestColumn := FindBestColumn(_requestedFloor)
+ 	chosenElevator := FindBestElevator(_requestedFloor, _direction)
 	return bestColumn, chosenElevator
-	elevator.Go()
+	Go()
 }
 
 //method to find best column
-func FindBestColumn(_requestedFloor int) int {
-	chosenColumn = 0;
-	for _, chosenColumn := range b.ColumnsList {
-	if b.ColumnsList.servedFloors[0] == _requestedFloor {
-		chosenColumn = currentColumn;
+func(b *Battery) FindBestColumn(_requestedFloor int) Column {
+	var chosenColumn Column
+	for _, currentColumn := range b.ColumnsList {
+	if currentColumn.ServedFloors[0] == _requestedFloor {
+		chosenColumn = currentColumn
+		break
 	}
 }
 	return chosenColumn
-})
-
+}
 
 //class column
 type Column struct {
@@ -53,13 +61,14 @@ type Column struct {
 	Status string
 	ServedFloors []int
 	IsBasement bool
-	ElevatorsList []int
-	CallButtonsList []int
+	ElevatorsList []Elevator
+	CallButtonsList []CallButton
+	_amountOfElevators int
 }
 
 //column ctor
 func(c *Column) Init(_id int, _amountOfElevators int, _servedFloors int, _isBasement bool) {
-	c.ID = id
+	c.ID = _id
 	c.Status = "online"
 	c.ServedFloors = []int
 	c.IsBasement = false
@@ -68,20 +77,16 @@ func(c *Column) Init(_id int, _amountOfElevators int, _servedFloors int, _isBase
 
 	for i := 0; i < _amountOfElevators; i++ {
 		var elevator int
-		c.ElevatorsList.append(elevator)
+		append(c.ElevatorsList(elevator))
 	}
 
 	for j := 0; j < ServedFloors; j++ {
-		var floorButton := j;
-		if (j != 1)
-		{
-			button = new CallButton(j, j, "down");
-			c.CallButtonsList.append(button)
-		}
-		else if (j != _servedFloors)
-		{
-			button = new CallButton(j, j, "up");
-			c.CallButtonsList.append(button)
+		if (j != 1) {
+			button = new(CallButton(j, j, "down"))
+			append(c.CallButtonsList(button))
+		} else if (j != _servedFloors) {
+			button = new(CallButton(j, j, "up"))
+			append(c.CallButtonsList(button))
 		}
 	}
 }
@@ -122,7 +127,7 @@ func(c *Column) Init(_id int, _amountOfElevators int, _servedFloors int, _isBase
  			callButtonID++
 		}
 		if (buttonFloor > 1) {
-			callButton := new (CallButton(callButtonID, buttonFloor, "down"))
+			callButton := new(CallButton(callButtonID, buttonFloor, "down"))
 			c.CallButtonsList.append(callButton)
 			callButtonID++
 		} else {
@@ -141,8 +146,8 @@ func(c *Column) Init(_id int, _amountOfElevators int, _servedFloors int, _isBase
 
  func RequestElevator(_requestedFloor int, _direction string) {
  	elevator := new(FindBestElevator(_floor, _direction))
- 	elevator.FloorRequestsList.append(_floor)
- 	elevator.Go();
+ 	FloorRequestsList.append(_floor)
+ 	Go();
  	fmt.Println("<OPENING DOORS")
  	return elevator
  }
@@ -163,3 +168,119 @@ func(c *Column) Init(_id int, _amountOfElevators int, _servedFloors int, _isBase
 	return chosenElevator
  }
 
+//class elevator
+type Elevator struct {
+	ID int
+	Status string
+	CurrentFloor []int
+	Direction string
+	Door Door
+	FloorRequestsList []int
+	CompletedRequestsList []int
+}
+
+//elevator ctor
+func(e *Elevator) Init(_id int) {
+	e.ID = _id
+	e.Status = "idle"
+	e.CurrentFloor = 1
+	e.Direction = null
+	e.Door = new(Door)
+	e.FloorRequestsList = []int
+	e.CompletedRequestsList = []int
+}
+
+func CreateFloorRequestButtons(_amountOfFloors int) {
+	buttonFloor := 1
+	var direction string
+	for i := 0; i < _amountOfFloors; i++ {
+		floorRequestButton = new(FloorRequestButton(ID, buttonFloor, direction))
+		FloorRequestsList.append(i)
+		buttonFloor++
+		ID++
+	}
+}
+
+func RequestFloor(floor int) {
+	e.FloorRequestsList.append(floor)
+	Go()
+}
+
+func Go() {
+	for true len(e.FloorRequestsList != 0) {
+		destination := e.FloorRequestsList[0]
+		e.Status = "moving"
+		if (e.CurrentFloor < destination) {
+			e.Direction = "up"
+			for (e.CurrentFloor < destination) {
+				fmt.Println("Elevator #" + e.ID + " is now at floor " + e.CurrentFloor)
+				e.CurrentFloor++
+			}
+		} else if (e.CurrentFloor > destination) {
+			e.Direction = "down"
+			for (e.CurrentFloor > destination) {
+				e.CurrentFloor--
+			}
+		}
+		e.Status = "stopped"
+		//e.FloorRequestsList.
+	}
+	e.Status = "idle"
+}
+
+//class callbutton
+type CallButton struct {
+	ID int
+	Status string
+	Floor int
+	Direction string
+}
+
+//callbutton ctor
+func(cb *CallButton) Init(_id int, _floor int, _direction string) {
+	cb.ID = _id
+	cb.Status = "off"
+	cb.Floor = _floor
+	cb.Direction = _direction
+}
+
+//class floorrequestbutton
+type FloorRequestButton struct {
+	ID int
+	Status string
+	Floor int
+	Direction string
+}
+
+//floorrequestbutton ctor
+func(fl *FloorRequestButton) Init(_id int, _floor int, _direction string) {
+	fl.ID = _id
+	fl.Status = "off"
+	fl.Floor = _floor
+	fl.Direction = _direction
+}
+
+//class door
+type Door struct {
+	ID int
+	Status string
+}
+
+//door ctor
+func(d *Door) Init(_id int) {
+	d.ID = _id
+	d.Status = "off"
+}
+
+//class global
+type Global struct {
+	CurrentIDBattery := 0
+	CurrentIDColumn := 0
+	CurrentIDElevator := 0
+	CurrentIDCallButton := 0
+	CurrentIDFloorRequestButton := 0
+	CurrentIDDoor := 0
+}
+
+//old code
+//for i:= 0; i < len(b.ColumnsList); i++ {
