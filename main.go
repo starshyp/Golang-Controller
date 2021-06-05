@@ -1,18 +1,17 @@
 package main
+
 import (
 	"fmt"
 	"math"
-	"time"
 	"sort"
+	"time"
 )
 
 func main() {
-	//test2()
 	//test3()
 	fmt.Println("Hello World")
 }
 
-//class battery
 type Battery struct {
 	ID int
 	Status string
@@ -24,7 +23,6 @@ type Battery struct {
 	//_amountOfElevatorPerColumn int
 }
 
-//class column
 type Column struct {
 	ColID byte
 	Status string
@@ -35,7 +33,6 @@ type Column struct {
 	_amountOfElevators int
 }
 
-//class elevator
 type Elevator struct {
 	ID int
 	Status string
@@ -46,7 +43,6 @@ type Elevator struct {
 	CompletedRequestsList []int
 }
 
-//class callbutton
 type CallButton struct {
 	ID int
 	Status string
@@ -54,7 +50,6 @@ type CallButton struct {
 	Direction string
 }
 
-//class floorrequestbutton
 type FloorRequestButton struct {
 	ID int
 	Status string
@@ -62,7 +57,6 @@ type FloorRequestButton struct {
 	Direction string
 }
 
-//class door
 type Door struct {
 	ID int
 	Status string
@@ -70,38 +64,66 @@ type Door struct {
 
 ///////////////////////////////////////////////////BATTERY SECTION///////////////////////////////////////////////////
 //battery ctor
-func(b *Battery) Init(_id, _amountOfColumns, _amountOfFloors, _amountOfBasements, _amountOfElevatorPerColumn int) {
+func(b *Battery) NewBatt(_id, _amountOfColumns, _amountOfFloors, _amountOfBasements, _amountOfElevatorPerColumn int) {
       b.ID = _id
       b.Status = "online"
-      b.ColumnsList = b.ColumnsList
-      b.FloorRequestButtonsList = b.FloorRequestButtonsList
-//DOUBLE-CHECK//////////////////////////////
-      var colArr = [4]byte{ 'A', 'B', 'C', 'D'}
+      b.ColumnsList = []Column{}
+      b.FloorRequestButtonsList = []FloorRequestButton{}
+
+      //columnA := new(Column)
+      //columnA.NewCol('A',5,20,true)
+      //columnB := new(Column)
+      //columnB.NewCol('B',5,20,true)
+      //columnC := new(Column)
+      //columnC.NewCol('C',5,20,true)
+      //columnD := new(Column)
+      //columnD.NewCol('D',5,20,true)
+	  //
+      //columnA.ServedFloors = append(columnA.ServedFloors, -6,-5,-4,-3,-2,-1,)
+      //columnB.ServedFloors = append(columnB.ServedFloors, 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+      //columnC.ServedFloors = append(columnC.ServedFloors, 1,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40)
+      //columnD.ServedFloors = append(columnD.ServedFloors, 1,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60)
+      //b.ColumnsList = append(b.ColumnsList, *columnA, *columnB, *columnC, *columnD)
+
+      	//Battery := new(Battery)
+      	//Battery.ColumnsList
+		var colArr = [4]byte{ 'A', 'B', 'C', 'D'}
 		for i := 0; i < len(colArr); i++ {
-			column := new(Column)
-			column.ColID = byte(i)
-			b.ColumnsList = append(b.ColumnsList, *column)  ///check
-			//ColumnsList.append(column);
+			//column := new(Column)
+			//column.ColID = byte(i)
+			b.ColumnsList = append(b.ColumnsList, Column{byte(i),"",[]int{},false, []Elevator{}, []CallButton{}, 5})
+			//b.ColumnsList[i].ElevatorPush()
 		}
-	//DOUBLE-CHECK//////////////////////////////
-		for i := 0; i <= _amountOfFloors; i++ {
-			floor := -6
-			floorRequestID := -6
-			if (floor < 0) {
-				floorb := FloorRequestButton{}
-				// floorb.FloorbID = i;
-				b.FloorRequestButtonsList = append(b.FloorRequestButtonsList, floorb)
-				floor--
-				floorRequestID--
-			} else if (floor >= 0) {
-				floorb := FloorRequestButton{}
-				// floorb.FloorbID = i;
-				b.FloorRequestButtonsList = append(b.FloorRequestButtonsList, floorb)
-				floor++
-				floorRequestID++
-			}
+
+	for i := 0; i <= _amountOfFloors; i++ {
+		floor := -6
+		floorRequestID := -6
+		if (floor < 0) {
+			floorb := FloorRequestButton{}
+			// floorb.FloorbID = i;
+			b.FloorRequestButtonsList = append(b.FloorRequestButtonsList, floorb)
+			floor--
+			floorRequestID--
+		} else if (floor >= 0) {
+			floorb := FloorRequestButton{}
+			// floorb.FloorbID = i;
+			b.FloorRequestButtonsList = append(b.FloorRequestButtonsList, floorb)
+			floor++
+			floorRequestID++
 		}
+	}
+	//return Battery
 }
+
+//func (b *Battery) ColumnsNew() {
+//	var colArr = [4]byte{ 'A', 'B', 'C', 'D'}
+//	for i := 0; i < len(colArr); i++ {
+//		//column := new(Column)
+//		//column.ColID = byte(i)
+//		b.ColumnsList = append(b.ColumnsList, Column{byte(i),"",[]int{},false, []Elevator{}, []CallButton{}, 5})
+//		//b.ColumnsList[i].ElevatorPush()
+//	}
+//}
 
 //method to assign elevator
 func(b Battery) AssignElevator( _requestedFloor int, _direction string) Elevator {
@@ -123,43 +145,56 @@ func(b *Battery) FindBestColumn(_requestedFloor int) Column {
 }
 ///////////////////////////////////////////////////COLUMN SECTION///////////////////////////////////////////////////
 //column ctor
-func(c *Column) Init(_id byte, _amountOfElevators int, _servedFloors int, _isBasement bool) {
+func(c *Column) NewCol(_id byte, _amountOfElevators int, _servedFloors int, _isBasement bool) {
 	c.ColID = _id
 	c.Status = "online"
-	c.ServedFloors = c.ServedFloors
+	c.ServedFloors = []int{}
 	c.IsBasement = false
-	c.ElevatorsList = c.ElevatorsList
-	c.CallButtonsList = c.CallButtonsList
+	c.ElevatorsList = []Elevator{}
+	c.CallButtonsList = []CallButton{}
 
-	//push to elevatorslist
-	for i := 1; i < c._amountOfElevators; i++ {
-		elevator := Elevator()
-		c.ElevatorsList = append(c.ElevatorsList, elevator)
-	}
-
-	//for i := 0; i < _amountOfElevators; i++ {
-	//	elevator := new(Elevator[i])
-	//	c.ElevatorsList = append(c.ElevatorsList, *elevator)
-	//}
-
-	//for i := 0; i < _amountOfElevators; i++ {
-	//	c.ElevatorsList = append(c.ElevatorsList, Elevator{})
-	//}
-
-	////////////////////double-check
-	///call-buttons
+	//callbuttons
 	for j := 0; j < _servedFloors; j++ {
 		if (j != 1) {
 			//button := new(CallButton(j, j, "down"))
-			button := CallButton{}
-			c.CallButtonsList = append(c.CallButtonsList, button)
+			//button := CallButton{}
+			c.CallButtonsList = append(c.CallButtonsList, CallButton{j, "", j, "down"})
 		} else if (j == 1 || j == -6 || j == -5 || j == -4 || j == -3 || j == -2 || j == -1) {
 			//button := new(CallButton(j, j, "up"))
-			button := CallButton{}
-			c.CallButtonsList = append(c.CallButtonsList, button)
+			//button := CallButton{}
+			c.CallButtonsList = append(c.CallButtonsList, CallButton{j, "", j, "up"})
 		}
 	}
 }
+
+//push to elevatorslist
+func (c *Column) ElevatorPush() {
+	for i := 0; i < c._amountOfElevators; i++ {
+	//for _, n := range c._amountOfElevators {
+		c.ElevatorsList = append(c.ElevatorsList, Elevator{i + 1, "", 1, "", Door{1, ""}, []int{},[]int{}})
+	}
+}
+//for i := 0; i < c._amountOfElevators; i++ {
+//	elevator := new(Elevator)
+//	//elevator.ID = i
+//	c.ElevatorsList = append(c.ElevatorsList, *elevator)
+//}
+
+//for i := 0; i < c._amountOfElevators; i++ {
+//	elevator := Elevator(i)
+//	//elevator.Init(i)
+//	c.ElevatorsList = append(c.ElevatorsList, elevator)
+//}
+
+//for i := 0; i < _amountOfElevators; i++ {
+//	elevator := new(Elevator[i])
+//	c.ElevatorsList = append(c.ElevatorsList, *elevator)
+//}
+
+//for i := 0; i < _amountOfElevators; i++ {
+//	c.ElevatorsList = append(c.ElevatorsList, Elevator{})
+//}
+
  func(c *Column) PushServedFloors(_amountOfColumns int) {
  	//for item := 0; item < _amountOfColumns; item++ {
  		if (c.ColID == 'A') {
@@ -179,7 +214,7 @@ func(c *Column) Init(_id byte, _amountOfElevators int, _servedFloors int, _isBas
 				c.ServedFloors = append(c.ServedFloors, i)
 			}
 		} else {
-			fmt.Println("Fail")
+			fmt.Println("Failed")
 		}
 	//}
  }
@@ -213,8 +248,8 @@ func(c *Column) Init(_id byte, _amountOfElevators int, _servedFloors int, _isBas
  func (c *Column) RequestElevator(_requestedFloor int, _direction string) Elevator {
  	elevator := c.FindBestElevator(_requestedFloor, _direction)
  	elevator.FloorRequestsList = append(elevator.FloorRequestsList, _requestedFloor)
- 	elevator.SortFloorList()
  	e := Elevator{} ///double-check
+ 	e.SortFloorList()
  	e.Go()
  	fmt.Println("<OPENING DOORS")
  	return elevator
@@ -229,38 +264,39 @@ var bestElevatorInfo1 = map[string]Elevator {
 	"chosenElevator": Elevator{},
 }
 
- func(c *Column) FindBestElevator(_requestedFloor int, _direction string) {
+ func(c *Column) FindBestElevator(_requestedFloor int, _direction string) Elevator {
 	 for _, elevator := range c.ElevatorsList {
 		 if (_requestedFloor == elevator.CurrentFloor && _direction == elevator.Direction) {
-			 isBestElevator(elevator, 1)
+			 isBestElevator(elevator, 1, _requestedFloor)
 		 } else if (_requestedFloor < elevator.CurrentFloor && elevator.Direction == "down" && _direction == elevator.Direction) {
-			 isBestElevator(elevator, 2)
+			 isBestElevator(elevator, 2, _requestedFloor)
 		 } else if (_requestedFloor > elevator.CurrentFloor && elevator.Direction == "up" && _direction == elevator.Direction) {
-			 isBestElevator(elevator, 2)
+			 isBestElevator(elevator, 2, _requestedFloor)
 		 } else if (elevator.Status == "idle") {
-			 isBestElevator(elevator, 3)
+			 isBestElevator(elevator, 3, _requestedFloor)
 		 } else {
-			 isBestElevator(elevator, 4)
+			 isBestElevator(elevator, 4, _requestedFloor)
 		 }
 	 }
+	 return bestElevatorInfo1["chosenElevator"]
  }
 
-func isBestElevator(elevator Elevator, elevatorRank int) Elevator {
+func isBestElevator(elevator Elevator, elevatorRank int, _requestedFloor int) {
 	//bestElevatorInfo := make(map[string]int)
 	if (elevatorRank < bestElevatorInfo["rank"]) {
 		bestElevatorInfo1["chosenElevator"] = elevator
 		bestElevatorInfo["rank"] = elevatorRank
-		bestElevatorInfo["distance"] = int(math.Abs(elevator.CurrentFloor - _requestedFloor))
+		var result = math.Abs(float64(elevator.CurrentFloor - _requestedFloor))
+		bestElevatorInfo["distance"] = int(result)
 	} else if (elevatorRank == bestElevatorInfo["rank"]) {
-		var elevatorDistance = int(math.Abs(elevator.CurrentFloor - _requestedFloor))
+		var result2 = math.Abs(float64(elevator.CurrentFloor - _requestedFloor))
+		var elevatorDistance = int(result2)
 		if (elevatorDistance < bestElevatorInfo["distance"]) {
 			bestElevatorInfo1["chosenElevator"] = elevator
 			bestElevatorInfo["distance"] = elevatorDistance
 		}
 	}
-	return bestElevatorInfo1["chosenElevator"]
 }
-
 
 
  //	var chosenElevator int
@@ -286,8 +322,8 @@ func(e *Elevator) Init(_id int) {
 	e.CurrentFloor = 1
 	e.Direction = ""
 	e.Door = Door{}
-	e.FloorRequestsList = e.FloorRequestsList
-	e.CompletedRequestsList = e.CompletedRequestsList
+	e.FloorRequestsList = []int{}
+	e.CompletedRequestsList = []int{}
 }
 ////double-check//////////////////////////////
 //func(e *Elevator) PushToFloorRequestsList(_amountOfFloors int) {
@@ -318,7 +354,7 @@ func(d *Door) SwingDoors() {
 	d.Status = "closed"
 	fmt.Println(">> Closing Doors <<")
 }
-//double-check////////////
+
 func(e *Elevator) Go() {
 	for len(e.FloorRequestsList) != 0 {
 		destination := e.FloorRequestsList[0]
@@ -337,15 +373,20 @@ func(e *Elevator) Go() {
 			}
 		}
 		e.Status = "stopped"
-		//e.FloorRequestsList[len(e.FloorRequestsList)-1]
-		a := e.FloorRequestsList
-		//i := 0
 
-		//a[i] = a[len(a)-1]
-		a[len(a)-1] = ""
-		a = a[:len(a)-1]
+		////e.FloorRequestsList[len(e.FloorRequestsList)-1]
+		//var x []int = e.FloorRequestsList
+		//var s []int = x[0:1]
+		//s = s[:len(s)-1]
 
-		//e.FloorRequestsList[:len(e.FloorRequestsList)0]
+		//a := e.FloorRequestsList
+		////i := 0
+		////a[i] = a[len(a)-1]
+		//a[len(a)-1] = ""
+		//a = a[:len(a)-1]
+
+		////e.FloorRequestsList[:len(e.FloorRequestsList)0]
+
 		fmt.Println("Elevator # ", e.ID, " is now at floor ", e.CurrentFloor)
 
 		var d = new(Door)
@@ -383,6 +424,40 @@ func(fl *FloorRequestButton) Init(_id int, _floor int, _direction string) {
 func(d *Door) Init(_id int) {
 	d.ID = _id
 	d.Status = "closed"
+}
+
+func test3() {
+	fmt.Println("=======================INITIATE=======================")
+	battery := Battery{}
+	battery.NewBatt(1,4,60,6,5)
+	//battery.ColumnsNew()
+	battery.ColumnsList[3].ElevatorsList[0].CurrentFloor = 58;
+	battery.ColumnsList[3].ElevatorsList[0].Direction = "down";
+	battery.ColumnsList[3].ElevatorsList[0].Status = "active";
+	//append(battery.ColumnsList[3].ElevatorsList[0].FloorRequestsList, 1);
+
+	battery.ColumnsList[3].ElevatorsList[1].CurrentFloor = 50;
+	battery.ColumnsList[3].ElevatorsList[1].Direction = "up";
+	battery.ColumnsList[3].ElevatorsList[1].Status = "active";
+	//append(battery.ColumnsList[3].ElevatorsList[0].FloorRequestsList, 60);
+
+	battery.ColumnsList[3].ElevatorsList[2].CurrentFloor = 46;
+	battery.ColumnsList[3].ElevatorsList[2].Direction = "up";
+	battery.ColumnsList[3].ElevatorsList[2].Status = "active";
+	//append(battery.ColumnsList[3].ElevatorsList[0].FloorRequestsList, 58);
+
+	battery.ColumnsList[3].ElevatorsList[3].CurrentFloor = 1;
+	battery.ColumnsList[3].ElevatorsList[3].Direction = "up";
+	battery.ColumnsList[3].ElevatorsList[3].Status = "active";
+	//append(battery.ColumnsList[3].ElevatorsList[0].FloorRequestsList, 54);
+
+	battery.ColumnsList[3].ElevatorsList[4].CurrentFloor = 60;
+	battery.ColumnsList[3].ElevatorsList[4].Direction = "down";
+	battery.ColumnsList[3].ElevatorsList[4].Status = "active";
+	//append(battery.ColumnsList[3].ElevatorsList[0].FloorRequestsList, 1);
+
+	column := battery.ColumnsList[3]
+	column.RequestElevator(54, "down")
 }
 
 //class global
